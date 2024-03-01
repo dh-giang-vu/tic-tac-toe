@@ -1,5 +1,6 @@
 const MARKER_1 = "X";
 const MARKER_2 = "O";
+const boardContainer = document.querySelector(".board-container");
 
 
 function createPlayer(marker) {
@@ -76,15 +77,100 @@ const gameBoard = (function() {
         return null;
     }
 
-    return {mark, getBoard, isFull, getWinner};
+    const clearBoard = () => {
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[0].length; j++) {
+                board[i][j] = 0;
+            }
+        }
+    }
+
+    return {mark, getBoard, isFull, getWinner, clearBoard};
 })();
+
+
+
+
+const displayController = (function() {
+    const squares = boardContainer.children;
+    const scoreContainer = document.querySelector(".score-container");
+
+    const updateScoreDisplay = (player) => {
+        let playerScoreDiv;
+        
+        if (player.marker === MARKER_1) {
+            playerScoreDiv = scoreContainer.children.item(0);
+        }
+        else {
+            playerScoreDiv = scoreContainer.children.item(1);
+        }
+        
+        playerScoreDiv.querySelector("span").textContent = player.getScore();
+    }
+    
+    const updateBoardDisplay = () => {
+        console.log("Update Display");
+        
+        let board = gameBoard.getBoard();
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[0].length; j++) {
+                let index = 3*i + j;
+                if (board[i][j] === 0) {
+                    squares.item(index).textContent = "";
+                    continue;
+                }
+                squares.item(index).textContent = board[i][j];
+            }
+        }
+    }
+    
+    return {updateBoardDisplay, updateScoreDisplay};
+})();
+
 
 
 
 const gameController = (function() {
     let playerX = createPlayer(MARKER_1);
     let playerO = createPlayer(MARKER_2);
+    
+    let currentPlayer = playerX;
 
+    const playTurn = (squareNum) => {
+        let i = Math.floor(squareNum / 3);
+        let j = squareNum % 3;
 
+        if (gameBoard.mark(i, j, currentPlayer.marker)) {
+            displayController.updateBoardDisplay();
+            currentPlayer = (currentPlayer === playerX) ? playerO : playerX;
+        }
+        else {
+            return;
+        }
+
+        let winnerMarker = gameBoard.getWinner();
+        if (winnerMarker !== null) {
+            winner = (winnerMarker === MARKER_1) ? playerX : playerO;
+            winner.incrementScore();
+            displayController.updateScoreDisplay(winner);
+
+            gameBoard.clearBoard();
+            displayController.updateBoardDisplay();
+        }
+        else if (gameBoard.isFull()){
+            console.log("Draw");
+        }
+    }
+
+    return {playTurn}
     
 })();
+
+
+
+
+boardContainer.addEventListener("click", function(e) {
+    if (e.target.className === "square") {
+        gameController.playTurn(e.target.id);
+    }
+})
