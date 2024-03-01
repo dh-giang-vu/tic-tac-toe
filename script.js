@@ -4,7 +4,10 @@ const BOARD_DMS = 3;
 const boardContainer = document.querySelector(".board-container");
 
 
-
+const announcement = document.querySelector(".announcement");
+const newRoundBtn = announcement.querySelector("button");
+const message = announcement.querySelector("p");
+const newGameBtn = document.querySelector("#ng");
 
 
 // A Player has a score and a marker i.e "X" and "O"
@@ -87,12 +90,15 @@ const gameBoard = (function() {
         return null;
     }
 
+    // Clear all markers off of board & clear winChecker
     const clearBoard = () => {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[0].length; j++) {
                 board[i][j] = 0;
             }
         }
+
+        winChecker.fill(0);
     }
 
     return {mark, getBoard, isFull, getWinner, clearBoard};
@@ -160,9 +166,9 @@ const gameController = (function() {
     const newGame = () => {
         newRound();
         playerX.resetScore();
-        playerY.resetScore();
+        playerO.resetScore();
         displayController.updateScoreDisplay(playerX);
-        displayController.updateBoardDisplay(playerY);
+        displayController.updateScoreDisplay(playerO);
     }
 
     // 1 player's turn
@@ -200,7 +206,7 @@ const gameController = (function() {
         currentPlayer = (currentPlayer === playerX) ? playerO : playerX;
     }
 
-    return {newRound, newGame, playTurn};
+    return {newRound, newGame, playTurn, playerX, playerO};
     
 })();
 
@@ -211,3 +217,8 @@ boardContainer.addEventListener("click", function(e) {
         gameController.playTurn(e.target.id);
     }
 })
+
+
+message.textContent = "";
+newRoundBtn.addEventListener("click", () => gameController.newRound());
+newGameBtn.addEventListener("click", () => gameController.newGame());
