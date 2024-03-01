@@ -1,16 +1,24 @@
 const MARKER_1 = "X";
 const MARKER_2 = "O";
+const BOARD_DMS = 3;
 const boardContainer = document.querySelector(".board-container");
 
 
+
+
+
+// A Player has a score and a marker i.e "X" and "O"
 function createPlayer(marker) {
     let score = 0;
     const getScore = () => score;
     const incrementScore = () => score++;
+    const resetScore = () => score = 0;
     
-    return {marker, getScore, incrementScore};
+    return {marker, getScore, incrementScore, resetScore};
 }
 
+// gameBoard has a 3x3 board
+// each square in board can be marked by player
 const gameBoard = (function() {
     const board = new Array(3).fill(0).map(() => new Array(3).fill(0));
     const getBoard = () => board;
@@ -28,6 +36,7 @@ const gameBoard = (function() {
         return true;
     }
     
+    // 8 ways to win, 3 rows, 3 columns, 2 diagonals
     const winConditionSets = [
         new Set([0,1,2]),
         new Set([3,4,5]),
@@ -39,6 +48,7 @@ const gameBoard = (function() {
         new Set([2,4,6])
     ]
     
+    // Array track sum of the markers on each of the 8 ways to win
     const winChecker = new Array(8).fill(0);
     
     // Mark the board and update winChecker, return true if successful
@@ -133,39 +143,66 @@ const displayController = (function() {
 const gameController = (function() {
     let playerX = createPlayer(MARKER_1);
     let playerO = createPlayer(MARKER_2);
-    
+
     let currentPlayer = playerX;
+    let roundWinner = null;
 
+    // Set up new round, keeping player's current score
+    const newRound = () => {
+        currentPlayer = playerX;
+        gameBoard.clearBoard();
+        displayController.updateBoardDisplay();
+
+        roundWinner = null;
+    }
+
+    // Set up new game, resetting players' score
+    const newGame = () => {
+        newRound();
+        playerX.resetScore();
+        playerY.resetScore();
+        displayController.updateScoreDisplay(playerX);
+        displayController.updateBoardDisplay(playerY);
+    }
+
+    // 1 player's turn
     const playTurn = (squareNum) => {
-        let i = Math.floor(squareNum / 3);
-        let j = squareNum % 3;
-
-        if (gameBoard.mark(i, j, currentPlayer.marker)) {
-            displayController.updateBoardDisplay();
-            currentPlayer = (currentPlayer === playerX) ? playerO : playerX;
-        }
-        else {
+        if (roundWinner !== null) {
             return;
         }
 
-        let winnerMarker = gameBoard.getWinner();
-        if (winnerMarker !== null) {
-            winner = (winnerMarker === MARKER_1) ? playerX : playerO;
-            winner.incrementScore();
-            displayController.updateScoreDisplay(winner);
+        // Calculate i, j indices base on clicked square's id
+        let i = Math.floor(squareNum / BOARD_DMS);
+        let j = squareNum % BOARD_DMS;
 
-            gameBoard.clearBoard();
-            displayController.updateBoardDisplay();
+        const markSuccessful = gameBoard.mark(i, j, currentPlayer.marker);
+        // Couldn't mark at chosen location => early return
+        if (!markSuccessful) {
+            return;
         }
-        else if (gameBoard.isFull()){
-            console.log("Draw");
+        
+        // Update display
+        displayController.updateBoardDisplay();
+
+        roundWinner = gameBoard.getWinner();
+        if (roundWinner !== null) {
+            // Announce winner
+            console.log(roundWinner);
+            // Increment winner's score
+            let pl = (roundWinner === MARKER_1) ? playerX : playerO;
+            pl.incrementScore();
+            // Update display
+            displayController.updateScoreDisplay(pl);
+            return;
         }
+
+        // Switch to next player's turn
+        currentPlayer = (currentPlayer === playerX) ? playerO : playerX;
     }
 
-    return {playTurn}
+    return {newRound, newGame, playTurn};
     
 })();
-
 
 
 
