@@ -6,7 +6,6 @@ const boardContainer = document.querySelector(".board-container");
 
 const announcement = document.querySelector(".announcement");
 const newRoundBtn = announcement.querySelector("button");
-const message = announcement.querySelector("p");
 const newGameBtn = document.querySelector("#ng");
 
 
@@ -139,7 +138,7 @@ const displayController = (function() {
             }
         }
     }
-    
+
     return {updateBoardDisplay, updateScoreDisplay};
 })();
 
@@ -191,6 +190,7 @@ const gameController = (function() {
         displayController.updateBoardDisplay();
 
         roundWinner = gameBoard.getWinner();
+        // Check if someone wins & increment their score
         if (roundWinner !== null) {
             // Announce winner
             console.log(roundWinner);
@@ -199,6 +199,12 @@ const gameController = (function() {
             pl.incrementScore();
             // Update display
             displayController.updateScoreDisplay(pl);
+            return;
+        }
+        // Check for a draw - no one wins && board is full
+        else if (gameBoard.isFull()) {
+            console.log("This is a draw");
+            roundWinner = -1;
             return;
         }
 
@@ -219,6 +225,5 @@ boardContainer.addEventListener("click", function(e) {
 })
 
 
-message.textContent = "";
 newRoundBtn.addEventListener("click", () => gameController.newRound());
 newGameBtn.addEventListener("click", () => gameController.newGame());
