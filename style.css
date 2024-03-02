@@ -2,14 +2,42 @@ body {
     font-family: helvetica, Arial, sans-serif;
 }
 
-.score-container {
+.top-container {
+    display: flex;
     width: 500px;
     margin: auto;
-    margin-top: 75px;
+    margin-top: 50px;
+
+    justify-content: space-between;
 }
 
-#y-score {
-    margin-top: 3px;
+#game-name {
+    font-weight: 700;
+    font-size: 36px;
+}
+
+#ng {
+    margin-top: 6px;
+}
+
+.score-container {
+    display: flex;
+    gap: 35px;
+    padding-top: 12px;
+}
+
+.score {
+    background-color: rgb(190, 190, 190);
+    height: 45px;
+    width: 100px;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 6px;
+}
+
+.score span {
+    display: block;
+    padding-top: 3px;
 }
 
 .board-container {

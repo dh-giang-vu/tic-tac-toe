@@ -7,9 +7,22 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="score-container">
-    <div id="x-score">Player X's score: <span>0</span></div>
-    <div id="o-score">Player O's score: <span>0</span></div>
+  <div class="top-container">
+
+    <div class="left-container">
+      <div id="game-name">TIC-TAC-TOE</div>
+      <div id="instruction">Make 3 marks in a row to win!</div>
+      <button id="ng">New Game</button>
+    </div>
+
+    <div class="right-container">
+      <div class="score-container">
+        <div id="x-score" class="score">X's score: <span>0</span></div>
+        <div id="o-score" class="score">O's score: <span>0</span></div>
+      </div>
+    </div>
+
+
   </div>
   <div class="board-container">
     <div class="square" id="0"></div>
@@ -27,8 +40,6 @@
     <p>Player X won this round</p>
     <button>New Round</button>
   </div>
-
-  <button id="ng">New Game</button>
 
   <script src="script.js"></script>
 </body>
