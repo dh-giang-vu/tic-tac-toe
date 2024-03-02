@@ -42,16 +42,20 @@ body {
 }
 
 .announcement {
+    /* Hide announcement on start */
+    display: none;
+
+    /* Overlay on top of game board */
     position: absolute;
     border: 2px solid rgb(136, 136, 136, 0.5);
     background-color: rgba(119, 119, 119, 0.2);
 
-    width: 700px;
-
+    /* Position at center of screen */
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
-
+    
+    width: 700px;
     text-align: center;
     padding: 30px 0px;
 

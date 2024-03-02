@@ -139,10 +139,23 @@ const displayController = (function() {
         }
     }
 
-    return {updateBoardDisplay, updateScoreDisplay};
+    const message = announcement.querySelector("p");
+    const hideAnnouncement = () => {
+        announcement.style.display = "none"; 
+    }
+
+    const showAnnouncement = (winner) => {
+        if (winner === -1) {
+            message.textContent = "It's a Draw";
+        }
+        else {
+            message.textContent = "Player " + winner + " won this round"; 
+        }
+        announcement.style.display = "block";
+    }
+
+    return {updateBoardDisplay, updateScoreDisplay, hideAnnouncement, showAnnouncement};
 })();
-
-
 
 
 const gameController = (function() {
@@ -157,6 +170,7 @@ const gameController = (function() {
         currentPlayer = playerX;
         gameBoard.clearBoard();
         displayController.updateBoardDisplay();
+        displayController.hideAnnouncement();
 
         roundWinner = null;
     }
@@ -193,7 +207,7 @@ const gameController = (function() {
         // Check if someone wins & increment their score
         if (roundWinner !== null) {
             // Announce winner
-            console.log(roundWinner);
+            displayController.showAnnouncement(roundWinner);
             // Increment winner's score
             let pl = (roundWinner === MARKER_1) ? playerX : playerO;
             pl.incrementScore();
@@ -203,8 +217,8 @@ const gameController = (function() {
         }
         // Check for a draw - no one wins && board is full
         else if (gameBoard.isFull()) {
-            console.log("This is a draw");
             roundWinner = -1;
+            displayController.showAnnouncement(roundWinner);
             return;
         }
 
