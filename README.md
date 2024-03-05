@@ -1,6 +1,6 @@
 # tic-tac-toe
 
-Classic 3x3 tic-tac-toe game.
+Classic 3x3 tic-tac-toe game.\
 View live page: https://dh-giang-vu.github.io/tic-tac-toe/
 
 # What I Learned
